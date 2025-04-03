@@ -84,8 +84,12 @@ public class ProjectFunctions {
 	void navigateToUrl() throws Exception
 	{
 		//// OLD CODE 
+		 ChromeOptions options = new ChromeOptions();
+     		options.addArguments("--headless");
+        	options.addArguments("--disable-gpu");
+        	options.addArguments("--no-sandbox");
 		WebDriverManager.chromedriver().setup();
-		driver= new ChromeDriver();
+		driver= new ChromeDriver(options);
 		try {
 
 			driver.get("https://app.humb.io");
