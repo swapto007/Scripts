@@ -41,6 +41,14 @@ jobs:
         # Verify installations
         google-chrome-stable --version
         chromedriver --version
+        - name: Cache Maven dependencies
+          uses: actions/cache@v2
+        with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+        ${{ runner.os }}-maven-
+
 
     - name: Run Selenium Tests
       run: mvn test -B
