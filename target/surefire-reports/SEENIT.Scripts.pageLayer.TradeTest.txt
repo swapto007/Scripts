@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: SEENIT.Scripts.pageLayer.TradeTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 87.25 s -- in SEENIT.Scripts.pageLayer.TradeTest

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
+  <reporter-output>
+  </reporter-output>
+  <suite started-at="2025-01-30T05:41:35Z" name="Surefire suite" finished-at="2025-01-30T05:42:57Z" duration-ms="81360">
+    <groups>
+    </groups>
+    <test started-at="2025-01-30T05:41:35Z" name="Surefire test" finished-at="2025-01-30T05:42:57Z" duration-ms="81360">
+      <class name="SEENIT.Scripts.pageLayer.TradeTest">
+        <test-method is-config="true" signature="preSuiteandler()[pri:0, instance:SEENIT.Scripts.pageLayer.TradeTest@314c508a]" started-at="2025-01-30T11:11:30Z" name="preSuiteandler" finished-at="2025-01-30T11:11:35Z" duration-ms="5601" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- preSuiteandler -->
+        <test-method signature="login()[pri:1, instance:SEENIT.Scripts.pageLayer.TradeTest@314c508a]" started-at="2025-01-30T11:11:35Z" name="login" finished-at="2025-01-30T11:12:56Z" duration-ms="80716" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+        <test-method is-config="true" signature="generateReport()[pri:0, instance:SEENIT.Scripts.pageLayer.TradeTest@314c508a]" started-at="2025-01-30T11:12:56Z" name="generateReport" finished-at="2025-01-30T11:12:57Z" duration-ms="627" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- generateReport -->
+      </class> <!-- SEENIT.Scripts.pageLayer.TradeTest -->
+    </test> <!-- Surefire test -->
+  </suite> <!-- Surefire suite -->
+</testng-results>
