@@ -2,8 +2,8 @@ name: Run Selenium Test Every Hour
 
 on:
   schedule:
-    - cron: "0 * * * *"  # Runs every hour
-  workflow_dispatch:  # Allows manual trigger
+    - cron: "0 * * * *"  # Runs at the top of every hour
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
   test:
@@ -11,31 +11,44 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # Updated to latest version
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4  # Updated to latest version
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Install Chrome and ChromeDriver
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 'stable'  # Uses latest stable Chrome version
+          # Uncomment below for specific versions (must match)
+          # chrome-version: '125.0.6422.78'
+          # chromedriver-version: '125.0.6422.78'
+
+      - name: Verify installations
         run: |
-          sudo apt update
-          sudo apt install -y google-chrome-stable unzip
-          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
-          CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-          wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin/
-          chmod +x /usr/local/bin/chromedriver
+          google-chrome --version
+          chromedriver --version
 
       - name: Configure WebDriverManager to Use System Driver
         run: |
-          echo "webdriver.chrome.driver=/usr/local/bin/chromedriver" > selenium.properties
+          echo "webdriver.chrome.driver=$(which chromedriver)" > selenium.properties
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
 
       - name: Install Dependencies
-        run: mvn install -e  # Added -e flag to display full error output in case of failure
+        run: mvn clean install -e -B  # -B for batch mode, -e for errors
 
       - name: Run Selenium Tests
-        run: mvn test
+        run: mvn test -B
+        env:
+          # For headless execution (set in your test code via ChromeOptions)
+          HEADLESS_MODE: 'true'
