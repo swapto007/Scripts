@@ -11,10 +11,10 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4  # GitHub official action
+      uses: actions/checkout@v4
 
     - name: Set up JDK 17
-      uses: actions/setup-java@v4  # GitHub official action
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
@@ -41,14 +41,6 @@ jobs:
         # Verify installations
         google-chrome-stable --version
         chromedriver --version
-        - name: Cache Maven dependencies
-          uses: actions/cache@v2
-        with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-        ${{ runner.os }}-maven-
-
 
     - name: Run Selenium Tests
-      run: mvn test -B
+      run: mvn test -B -X
