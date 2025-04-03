@@ -9,17 +9,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Manually Install Chrome and ChromeDriver
-        run: |
-          sudo apt update
-          sudo apt install -y google-chrome-stable
-          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
-          CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-          wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin/
-          chmod +x /usr/local/bin/chromedriver
-
       - name: Checkout Repository
         uses: actions/checkout@v3
 
@@ -28,6 +17,36 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      - name: Install Chrome and ChromeDriver
+        run: |
+          set -e  # Exit script on error, except for specific cases
+          
+          # Install Chrome if not already installed
+          if ! command -v google-chrome &> /dev/null; then
+            echo "Installing Chrome..."
+            sudo apt update || true  # Ignore errors
+            sudo apt install -y google-chrome-stable || true  # Ignore errors
+          else
+            echo "Chrome is already installed."
+          fi
+          
+          # Get the installed Chrome version
+          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
+          
+          # Get the matching ChromeDriver version
+          CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+
+          # Install ChromeDriver if not already installed
+          if ! command -v chromedriver &> /dev/null; then
+            echo "Installing ChromeDriver..."
+            wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
+            unzip chromedriver_linux64.zip
+            sudo mv chromedriver /usr/local/bin/
+            chmod +x /usr/local/bin/chromedriver
+          else
+            echo "ChromeDriver is already installed."
+          fi
 
       - name: Install Dependencies
         run: mvn install
