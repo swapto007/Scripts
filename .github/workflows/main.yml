@@ -8,39 +8,39 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4  # GitHub official action
-      
+
     - name: Set up JDK 17
       uses: actions/setup-java@v4  # GitHub official action
       with:
         java-version: '17'
         distribution: 'temurin'
-        
+
     - name: Install Chrome and ChromeDriver
       run: |
         # Install Chrome
         sudo apt-get update
         sudo apt-get install -y wget
-        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-        echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/googlechrome-linux-keyring.gpg
+        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/googlechrome-linux-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
         sudo apt-get update
         sudo apt-get install -y google-chrome-stable
 
         # Install matching ChromeDriver
-        CHROME_VERSION=$(google-chrome-stable --version | awk '{print $3}')
-        CHROMEDRIVER_VERSION=$(wget -qO- https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*})
+        CHROME_MAJOR_VERSION=$(google-chrome-stable --version | awk '{print $3}' | cut -d'.' -f1)
+        CHROMEDRIVER_VERSION=$(wget -qO- https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAJOR_VERSION)
+        echo "Installing ChromeDriver version $CHROMEDRIVER_VERSION"
         wget -q https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
-        sudo unzip chromedriver_linux64.zip -d /usr/local/bin
+        sudo unzip -o chromedriver_linux64.zip -d /usr/local/bin
         sudo chmod +x /usr/local/bin/chromedriver
         rm chromedriver_linux64.zip
-        
-    - name: Verify installations
-      run: |
+
+        # Verify installations
         google-chrome-stable --version
         chromedriver --version
-        
+
     - name: Run Selenium Tests
       run: mvn test -B
