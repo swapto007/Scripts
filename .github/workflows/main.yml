@@ -19,14 +19,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-       - name: Install Chrome and ChromeDriver
-      uses: browser-actions/setup-chrome@latest
-      
-    - name: Verify installations
-      run: |
-        google-chrome --version
-        chromedriver --version
-        java -version
+      - name: Install Chrome and ChromeDriver
+        run: |
+          sudo apt update
+          sudo apt install -y google-chrome-stable unzip
+          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
+          CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+          wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /usr/local/bin/
+          chmod +x /usr/local/bin/chromedriver
+
       - name: Configure WebDriverManager to Use System Driver
         run: |
           echo "webdriver.chrome.driver=/usr/local/bin/chromedriver" > selenium.properties
