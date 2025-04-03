@@ -20,15 +20,10 @@ jobs:
           distribution: 'temurin'
 
       - name: Install Chrome and ChromeDriver
-        run: |
-          sudo apt update
-          sudo apt install -y google-chrome-stable unzip
-          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
-          CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-          wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin/
-          chmod +x /usr/local/bin/chromedriver
+  uses: browser-actions/setup-chrome@latest
+  with:
+    chrome-version: '120.0.6099.200'  # Specify exact version
+    chromedriver-version: '120.0.6099.200'  # Must match Chrome version
 
       - name: Configure WebDriverManager to Use System Driver
         run: |
