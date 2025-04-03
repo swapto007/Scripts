@@ -8,6 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -20,8 +21,8 @@ jobs:
 
       - name: Install Chrome and ChromeDriver
         run: |
-          sudo apt update || true
-          sudo apt install -y google-chrome-stable || true
+          sudo apt update
+          sudo apt install -y google-chrome-stable unzip
           CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
           CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
           wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
@@ -34,7 +35,7 @@ jobs:
           echo "webdriver.chrome.driver=/usr/local/bin/chromedriver" > selenium.properties
 
       - name: Install Dependencies
-        run: mvn install
+        run: mvn install -e  # Added -e flag to display full error output in case of failure
 
       - name: Run Selenium Tests
         run: mvn test
