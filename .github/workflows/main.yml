@@ -19,12 +19,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Chrome and ChromeDriver
-  uses: browser-actions/setup-chrome@latest
-  with:
-    chrome-version: '120.0.6099.200'  # Specify exact version
-    chromedriver-version: '120.0.6099.200'  # Must match Chrome version
-
+       - name: Install Chrome and ChromeDriver
+      uses: browser-actions/setup-chrome@latest
+      
+    - name: Verify installations
+      run: |
+        google-chrome --version
+        chromedriver --version
+        java -version
       - name: Configure WebDriverManager to Use System Driver
         run: |
           echo "webdriver.chrome.driver=/usr/local/bin/chromedriver" > selenium.properties
